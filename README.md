@@ -1,4 +1,4 @@
-Roam Research Plugin to set a custom start page for your roam graph. 
+*Roam Research Plugin to set a custom start page for your roam graph.*
 
 
 Don't want to open your graph to to daily notes page? This plugin automatically redirects you to a page or block of your choice when roam loads. 
