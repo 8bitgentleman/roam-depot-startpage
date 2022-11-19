@@ -1,42 +1,61 @@
 const panelConfig = {
-  tabTitle: "Test Ext 1",
+  tabTitle: "Start Page",
   settings: [
-      {id:          "button-setting",
-       name:        "Button test",
-       description: "tests the button",
-       action:      {type:    "button",
-                     onClick: (evt) => { console.log("Button clicked!"); },
-                     content: "Button"}},
-      {id:          "switch-setting",
-       name:        "Switch Test",
-       description: "Test switch component",
-       action:      {type:     "switch",
-                     onChange: (evt) => { console.log("Switch!", evt); }}},
-      {id:     "input-setting",
-       name:   "Input test",
-       action: {type:        "input",
-                placeholder: "placeholder",
-                onChange:    (evt) => { console.log("Input Changed!", evt); }}},
-      {id:     "select-setting",
-       name:   "Select test",
+      {id:     "start-type",
+       name:   "Select Start Type",
        action: {type:     "select",
-                items:    ["one", "two", "three"],
-                onChange: (evt) => { console.log("Select Changed!", evt); }}}
+                items:    ["page", "block"],
+                onChange: (evt) => { console.log("Select Changed!", evt); }}},
+      {id:     "start-page",
+        name:   "Startpage",
+        action: {type:        "input",
+                placeholder: "page name or block UID",
+                description: "Input the page name or block UID you would like to start on. Make sure the correct type is set in the dropdown above",
+                onChange:    (evt) => { console.log("Input Changed!", evt); }}}
   ]
 };
 
+
+
 async function onload({extensionAPI}) {
   // set defaults if they dont' exist
-  if (!extensionAPI.settings.get('data')) {
-      await extensionAPI.settings.set('data', "01");
+  if (!extensionAPI.settings.get('start-type')) {
+      await extensionAPI.settings.set('start-type', "page");
   }
+
+  let graphName = roamAlphaAPI.graph.name;
+  let rootLocation = "https://roamresearch.com/#/app/"+graphName;
+  let location = window.location.href;
+
+  if (rootLocation==location) {
+    // check if we are actually at the default roam first page
+    if (extensionAPI.settings.get('start-page')) {
+      let type = extensionAPI.settings.get('start-type');
+      console.log("at root", type)
+      if (type=="page") {
+
+        window.roamAlphaAPI.ui.mainWindow.openPage(
+          {page: {title: extensionAPI.settings.get('start-page')}})
+          
+      } else if (type=="block") {
+
+        // strip out paranthesis if user accidentally left them in
+        let block = extensionAPI.settings.get('start-page')
+        block = block.replaceAll('(', '').replaceAll(')', '');
+
+        window.roamAlphaAPI.ui.mainWindow.openPage(
+          {page: {uid: block}})
+      } 
+    }
+  }
+
   extensionAPI.settings.panel.create(panelConfig);
 
-  console.log("load example plugin");
+  console.log("load startpage plugin");
 }
 
 function onunload() {
-  console.log("unload example plugin");
+  console.log("unload startpage plugin");
 }
 
 export default {
