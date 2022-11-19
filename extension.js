@@ -16,7 +16,6 @@ const panelConfig = {
 };
 
 
-
 async function onload({extensionAPI}) {
   // set defaults if they dont' exist
   if (!extensionAPI.settings.get('start-type')) {
@@ -30,14 +29,14 @@ async function onload({extensionAPI}) {
   if (rootLocation==location) {
     // check if we are actually at the default roam first page
     if (extensionAPI.settings.get('start-page')) {
-      let type = extensionAPI.settings.get('start-type');
-      console.log("at root", type)
-      if (type=="page") {
+      let startType = extensionAPI.settings.get('start-type');
+
+      if (startType=="page") {
 
         window.roamAlphaAPI.ui.mainWindow.openPage(
           {page: {title: extensionAPI.settings.get('start-page')}})
-          
-      } else if (type=="block") {
+
+      } else if (startType=="block") {
 
         // strip out paranthesis if user accidentally left them in
         let block = extensionAPI.settings.get('start-page')
