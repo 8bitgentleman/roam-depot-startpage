@@ -23,7 +23,12 @@ async function onload({extensionAPI}) {
   }
 
   let graphName = roamAlphaAPI.graph.name;
-  let rootLocation = "https://roamresearch.com/#/app/"+graphName;
+  if (roamAlphaAPI.graph.type == "hosted") {
+    let rootLocation = "https://roamresearch.com/#/app/"+graphName;
+  } else if (roamAlphaAPI.graph.type == "offline") {
+    let rootLocation = "https://roamresearch.com/#/offline/"+graphName;
+  }
+  
   let location = window.location.href;
 
   if (rootLocation==location) {
