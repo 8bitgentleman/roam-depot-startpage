@@ -5,13 +5,13 @@ const panelConfig = {
        name:   "Select Start Type",
        action: {type:     "select",
                 items:    ["page", "block"],
-                onChange: (evt) => { console.log("Select Changed!", evt); }}},
+                onChange: (evt) => {  }}},
       {id:     "start-page",
         name:   "Startpage",
         action: {type:        "input",
                 placeholder: "page name or block UID",
                 description: "Input the page name or block UID you would like to start on. Make sure the correct type is set in the dropdown above",
-                onChange:    (evt) => { console.log("Input Changed!", evt); }}}
+                onChange:    (evt) => {  }}}
   ]
 };
 
@@ -21,17 +21,14 @@ async function onload({extensionAPI}) {
   if (!extensionAPI.settings.get('start-type')) {
       await extensionAPI.settings.set('start-type', "page");
   }
-
-  let graphName = roamAlphaAPI.graph.name;
-  if (roamAlphaAPI.graph.type == "hosted") {
-    let rootLocation = "https://roamresearch.com/#/app/"+graphName;
-  } else if (roamAlphaAPI.graph.type == "offline") {
-    let rootLocation = "https://roamresearch.com/#/offline/"+graphName;
-  }
   
-  let location = window.location.href;
+  // get the last bit of the url
+  // when at the default roam start page this will be the graph name
+  // everywhere else it would be the page uid
+  let location = window.location.href.split("/").filter(n => n).slice(-1)[0]
 
-  if (rootLocation==location) {
+
+  if (roamAlphaAPI.graph.name==location) {
     // check if we are actually at the default roam first page
     if (extensionAPI.settings.get('start-page')) {
       let startType = extensionAPI.settings.get('start-type');
